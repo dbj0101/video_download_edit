@@ -1,0 +1,22 @@
+[
+  [0.0, 1.0, "Horse"],
+  [5.5, 10.1, "Dog at gate"],
+  [10.9, 11.9, "Rabbit"],
+  [15.8, 22.3, "Puppy through gate"],
+  [23.1, 24.1, "Horse at gate"],
+  [29.3, 44.2, "Ferret and Dog"],
+  [44.7, 54.8, "Puppy in crate"],
+  [55.4, 56.4, "Guinea Pig"],
+  [59.5, 66.3, "Cat through pet door"],
+  [66.8, 73.1, "Dog through gate"],
+  [73.6, 79.9, "Corgi barking at gate"],
+  [80.3, 91.6, "Great Dane with package"],
+  [92.2, 93.2, "Alpaca"],
+  [101.0, 113.2, "Cat opening door"],
+  [114.0, 115.0, "Hamster"],
+  [124.4, 148.6, "Cat jumping for handle"],
+  [149.0, 155.9, "Dog jumping gate"],
+  [158.0, 167.5, "Dog climbing fence"],
+  [168.7, 169.7, "Donkey"],
+  [177.8, 191.2, "Cat and Dog"]
+]

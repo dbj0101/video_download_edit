@@ -1,0 +1,20 @@
+# Google Gemini API Credentials
+GEMINI_API_KEY=your_actual_api_key_here
+
+# Gemini model to use
+GEMINI_MODEL="gemini-2.0-flash"
+
+# The prompt pulled by the process_with_gemini() method
+GEMINI_PROMPT="Act as a professional video editor. Analyze the video once from start to finish to create a single, chronological timeline.
+CHRONOLOGICAL RULES:
+Identify every animal segment in the order they appear. Do not overlap timestamps.
+The start_second of a new segment must be equal to or greater than the end_second of the previous segment.
+ANIMAL RULES:
+If a segment contains a Dog or a Cat, include the entire duration of that specific action.
+For any other animal, include only the first 1.0 second, then skip immediately to the next animal or action.
+MATH RULES:
+Use Total Seconds only. Convert 1:30 to 90.0, NOT 130.0.
+The video ends at 191.26 seconds. No value can exceed this.
+TIME SCALE REFERENCE: Use this scale to verify your math:1:00 -> 60.0 | 1:30 -> 90.02:00 -> 120.0 | 2:30 -> 150.03:00 -> 180.0 | 3:30 -> 210.04:00 -> 240.0 | 4:30 -> 270.05:00 -> 300.0 | 5:30 -> 330.0CHRONOLOGICAL: Return segments in a single, linear timeline. The start_second of a new segment must be $\ge$ the end_second of the previous one. Do not overlap or go backward in time.LIMIT: No timestamp can exceed the actual video duration.SELF-CORRECTION CHECK:Before outputting, audit your list. Ensure that a timestamp like '1:54' was converted to '114.0' and NOT '154.0'. Ensure the final JSON is sorted by time.OUTPUT FORMAT:Return ONLY a raw JSON list of lists: [[start_second, end_second, 'label']]. No markdown, no extra text."
+
+

@@ -1,1 +1,53 @@
 # video_download_edit
+Video Download & AI Edit
+An automated tool to download videos via yt-dlp, analyze speaker segments using the Gemini 2.0 Flash API, and perform surgical cuts using MoviePy.
+
+🛠 Prerequisites
+Ensure you have Python 3.10+ and FFmpeg installed on your Mac. You can install FFmpeg via Homebrew (which you already have set up for your game dev tools):
+
+Bash
+brew install ffmpeg
+📦 Installation
+Clone the repository and navigate to the folder.
+
+Install dependencies via pip:
+
+Bash
+pip install moviepy yt-dlp google-generativeai python-dotenv
+Configure Environment: Create a .env file in the root directory:
+
+Code snippet
+GEMINI_API_KEY=your_api_key_here
+FILE_PREFIX=VF_
+INDEX_WAIT_TIME=60
+🚀 Usage
+The script uses an opt-in architecture. You must explicitly tell it which actions to perform.
+
+1. Download Only
+Downloads the video to the /imported folder using the current date as the filename.
+
+Bash
+python3 import_video.py -u "https://youtube.com/watch?v=example"
+2. Download and Analyze (Gemini API)
+Downloads and generates a keep_segments.json file based on your AI prompt.
+
+Bash
+python3 import_video.py -u "URL" --doAPI
+3. Full Automation (Download, Analyze, and Cut)
+The full "surgical cut" pipeline.
+
+Bash
+python3 import_video.py -u "URL" --doAPI --doEdit
+4. Edit Existing File
+If the video and JSON already exist in /imported, you can skip the web/API steps:
+
+Bash
+python3 import_video.py --doEdit
+📝 Script Arguments
+-u "URL" : The video source URL.
+
+--doAPI : Triggers the Gemini 1.5/2.0 indexing and speaker analysis.
+
+--doEdit : Triggers the MoviePy rendering process to create the final cut.
+
+Since you mentioned we’ll be testing this with the Laura and Aaron video tomorrow, would you like me to add a section to the README on how to customize the GEMINI_PROMPT in your .env to handle their specific speaking rules?

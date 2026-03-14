@@ -28,11 +28,12 @@ def countdown_sleep(seconds, message):
     print(f"\r{message}... COMPLETE!          ")
 
 def process_with_gemini(video_path):
-    # Uses the custom prompt from your session for Laura/Aaron logic
+    # Uses the custom prompt from your session for filtering logic
     default_prompt = (
-        "Identify every segment where Laura is speaking and where Aaron is speaking. "
+        "Identify every segment where a Dog or a Cat is present and label as 'dogcat'. "
+        "Label all other segments 'other'."
         "Return a valid JSON list of lists: [[start, end, label]]. "
-        "Include all of Laura; only 1 second of Aaron."
+        "Include all of segmants labeld 'dogcat'; only 1 second of segments labeled 'other'."
     )
     prompt = env_prompt if env_prompt else default_prompt
 

@@ -9,13 +9,6 @@ Ensure you have **Python 3.10+** and **FFmpeg** installed on your Mac. You can i
 brew install ffmpeg
 ```
 
-### Why this works:
-* **Numbered Lists:** Starting a line with `1.`, `2.`, etc., tells Markdown to render a sequential list.
-* **Indentation:** Notice that the code blocks are indented by three spaces. This "nests" the copy box under the specific numbered step so the numbering doesn't break.
-* **Syntax Highlighting:** Adding `bash` or `env` after the first set of backticks provides color-coding for the commands, making them easier to read.
-
-Since you are running this on a MacBook Pro, would you like me to add a quick tip to the README on how to create that `.env` file directly from the Terminal using the `touch` command?
-
 ## 📦 Installation
 
 1. **Clone the repository** and navigate to the folder.
@@ -39,28 +32,24 @@ GEMINI_PROMPT="Include all of Laura speaking; only 1 second of Aaron."
 The script uses an **opt-in** architecture. You must explicitly tell it which actions to perform.
 
 1. **Download Only**
-
 Downloads the video to the `/imported` folder using the current date as the filename.
 
 ```Bash
 python3 import_video.py -u "https://youtube.com/watch?v=example"
 ```
 2. **Download and Analyze** (Gemini API)
-
 Downloads and generates a `keep_segments.json` file based on your AI prompt.
 
 ```Bash
 python3 import_video.py -u "URL" --doAPI
 ```
 3. **Full Automation (Download, Analyze, and Cut)**
-
 The full "surgical cut" pipeline.
 
 ```Bash
 python3 import_video.py -u "URL" --doAPI --doEdit
 ```
 4. **Edit Existing File**
-
 If the video and JSON already exist in /imported, you can skip the web/API steps:
 
 ```Bash

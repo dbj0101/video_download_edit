@@ -4,6 +4,12 @@ GEMINI_API_KEY=your_actual_api_key_here
 # Gemini model to use
 GEMINI_MODEL="gemini-2.0-flash"
 
+# Prefix for files
+FILE_PREFIX="VF_"
+
+# Time in seconds to wait between pings for the API
+INDEX_WAIT_TIME=60
+
 # The prompt pulled by the process_with_gemini() method
 GEMINI_PROMPT="Act as a professional video editor. Analyze the video once from start to finish to create a single, chronological timeline.
 CHRONOLOGICAL RULES:

@@ -9,6 +9,13 @@ Ensure you have **Python 3.10+** and **FFmpeg** installed on your Mac. You can i
 brew install ffmpeg
 ```
 
+### Why this works:
+* **Numbered Lists:** Starting a line with `1.`, `2.`, etc., tells Markdown to render a sequential list.
+* **Indentation:** Notice that the code blocks are indented by three spaces. This "nests" the copy box under the specific numbered step so the numbering doesn't break.
+* **Syntax Highlighting:** Adding `bash` or `env` after the first set of backticks provides color-coding for the commands, making them easier to read.
+
+Since you are running this on a MacBook Pro, would you like me to add a quick tip to the README on how to create that `.env` file directly from the Terminal using the `touch` command?
+
 ## 📦 Installation
 
 1. Clone the repository and navigate to the folder.

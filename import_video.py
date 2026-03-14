@@ -3,6 +3,7 @@ import os
 import sys
 import time
 import json
+import argparse
 from pathlib import Path
 from datetime import datetime
 import google.generativeai as genai
@@ -13,6 +14,8 @@ from moviepy import VideoFileClip, concatenate_videoclips
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 env_prompt = os.getenv("GEMINI_PROMPT")
+FILE_PREFIX = os.getenv("FILE_PREFIX", "VF_") 
+INDEX_WAIT_TIME = int(os.getenv("INDEX_WAIT_TIME", "60"))
 
 if api_key:
     genai.configure(api_key=api_key)
@@ -20,17 +23,17 @@ if api_key:
 def countdown_sleep(seconds, message):
     """Writes a countdown on one line that gets replaced."""
     for i in range(seconds, 0, -1):
-        # \r moves the cursor back to the start; end="" prevents a new line
         print(f"\r{message} in {i}s...   ", end="", flush=True)
         time.sleep(1)
-    # Clear the line or move to next after finishing
     print(f"\r{message}... COMPLETE!          ")
 
 def process_with_gemini(video_path):
+    # Uses the custom prompt from your session for filtering logic
     default_prompt = (
-        "Identify every segment where Laura is speaking and where Aaron is speaking. "
+        "Identify every segment where a Dog or a Cat is present and label as 'dogcat'. "
+        "Label all other segments 'other'."
         "Return a valid JSON list of lists: [[start, end, label]]. "
-        "Include all of Laura; only 1 second of Aaron."
+        "Include all of segmants labeld 'dogcat'; only 1 second of segments labeled 'other'."
     )
     prompt = env_prompt if env_prompt else default_prompt
 
@@ -45,8 +48,7 @@ def process_with_gemini(video_path):
     video_file = genai.upload_file(path=video_path)
     
     while video_file.state.name == "PROCESSING":
-        # Using the new countdown method here
-        countdown_sleep(20, "⏳ Gemini is indexing video frames")
+        countdown_sleep(INDEX_WAIT_TIME, "⏳ Gemini is indexing video frames")
         video_file = genai.get_file(video_file.name)
 
     if video_file.state.name == "FAILED":
@@ -67,9 +69,7 @@ def process_with_gemini(video_path):
     return segments_path
 
 def apply_moviepy_cuts(video_path, keep_segments_path):
-    # Requirement 1: Changed suffix to Segments_Cut.mp4
     output_file = video_path.parent / f"{video_path.stem}_Segments_Cut.mp4"
-    
     print(f"🎬 Performing surgical cuts on {video_path.name}...")
     
     try:
@@ -90,69 +90,77 @@ def apply_moviepy_cuts(video_path, keep_segments_path):
         video.close()
         print(f"✨ Success! Saved to {output_file.name}")
         return output_file
-
     except Exception as e:
         print(f"❌ MoviePy Error: {e}")
         return None
 
-def download_and_open():
-    # Requirement 3 & 4: Added --skipEditMovie and --skipAPI arguments
-    if len(sys.argv) < 2:
-        print("❌ Usage: python3 import_video.py <URL> [--skipEditMovie] [--skipAPI]")
-        return
-
-    video_url = sys.argv[1]
-    skip_edit = "--skipEditMovie" in sys.argv
-    skip_api = "--skipAPI" in sys.argv
+def main():
+    parser = argparse.ArgumentParser(description="Video Download and Auto-Editor")
+    parser.add_argument("-u", "--url", help="URL of the video to download")
+    parser.add_argument("--doAPI", action="store_true", help="Run Gemini API analysis")
+    parser.add_argument("--doEdit", action="store_true", help="Run MoviePy editing/rendering")
     
-    # Requirement 2: Changed prefix from GA_ to VF_
+    args = parser.parse_args()
+
     today_str = datetime.now().strftime("%Y%m%d")
-    filename = f"VF_{today_str}.mp4" 
+    filename = f"{FILE_PREFIX}{today_str}.mp4" 
 
     current_dir = Path(__file__).parent
     import_folder = current_dir / "imported"
     import_folder.mkdir(exist_ok=True)
-    download_path = import_folder / filename
+    video_path = import_folder / filename
 
-    if download_path.exists():
-        print(f"📂 Video already exists: {download_path.name}. Skipping download.")
+    # 1. Handle Download
+    if args.url:
+        if video_path.exists():
+            print(f"📂 Video already exists: {video_path.name}. Skipping download.")
+        else:
+            print(f"🌐 Downloading: {args.url}")
+            cmd = [
+                "yt-dlp", "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+                "--merge-output-format", "mp4", "-o", str(video_path), args.url
+            ]
+            try:
+                subprocess.run(cmd, check=True)
+                print(f"✅ Downloaded original: {video_path.name}")
+            except Exception as e:
+                print(f"❌ Download Error: {e}")
+                return
     else:
-        print(f"🌐 Downloading: {video_url}")
-        cmd = [
-            "yt-dlp", "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
-            "--merge-output-format", "mp4", "-o", str(download_path), video_url
-        ]
-        try:
-            subprocess.run(cmd, check=True)
-            print(f"✅ Downloaded original: {download_path.name}")
-        except Exception as e:
-            print(f"❌ Download Error: {e}")
-            return
-    
-    try:
-        reveal_path = download_path
-        segments_file = import_folder / f"{download_path.stem}_keep_segments.json"
+        print("⏭️ No URL provided: Skipping download step.")
 
-        # Requirement 4: Skip process_with_gemini call if requested
-        if api_key and not skip_api:
-            segments_file = process_with_gemini(download_path)
-            reveal_path = segments_file
-        elif skip_api:
-            print("⏭️ --skipAPI used: Skipping Gemini processing.")
+    # 2. Check if video exists before continuing
+    if not video_path.exists():
+        print(f"❌ Error: {video_path.name} not found. Use -u to download or place file in /imported.")
+        return
 
-        # Requirement 3: Skip apply_moviepy_cuts call if requested
-        if segments_file and segments_file.exists() and not skip_edit:
-            processed_video = apply_moviepy_cuts(download_path, segments_file)
+    reveal_path = video_path
+    segments_file = import_folder / f"{video_path.stem}_keep_segments.json"
+
+    # 3. Handle API Analysis
+    if args.doAPI:
+        if api_key:
+            segments_file = process_with_gemini(video_path)
+            if segments_file:
+                reveal_path = segments_file
+        else:
+            print("❌ GEMINI_API_KEY not found in .env")
+    else:
+        print("⏭️ --doAPI not used: Skipping Gemini processing.")
+
+    # 4. Handle MoviePy Editing
+    if args.doEdit:
+        if segments_file and segments_file.exists():
+            processed_video = apply_moviepy_cuts(video_path, segments_file)
             if processed_video:
                 reveal_path = processed_video
-        elif skip_edit:
-            print("⏭️ --skipEditMovie used: Skipping MoviePy rendering.")
+        else:
+            print(f"❌ Cannot edit: {segments_file.name} missing. Run with --doAPI first.")
+    else:
+        print("⏭️ --doEdit not used: Skipping MoviePy rendering.")
 
-        # subprocess.run(["open", "-a", "iMovie"])
-        subprocess.run(["open", "-R", str(reveal_path)])
-        
-    except Exception as e:
-        print(f"❌ Error: {e}")
+    # Final Step: Reveal in Finder
+    subprocess.run(["open", "-R", str(reveal_path)])
 
 if __name__ == "__main__":
-    download_and_open()
+    main()

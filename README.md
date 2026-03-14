@@ -11,9 +11,9 @@ brew install ffmpeg
 
 ## 📦 Installation
 
-Clone the repository and navigate to the folder.
+1. Clone the repository and navigate to the folder.
 
-Install dependencies via pip:
+2. Install dependencies via pip:
 
 Bash
 pip install moviepy yt-dlp google-generativeai python-dotenv

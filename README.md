@@ -25,7 +25,8 @@ GEMINI_API_KEY=your_api_key_here
 FILE_PREFIX=VF_
 INDEX_WAIT_TIME=60
 # Optional: Set a custom prompt for the AI analysis
-GEMINI_PROMPT="Include all of Laura speaking; only 1 second of Aaron."
+GEMINI_MODEL="gemini-2.0-flash"
+GEMINI_PROMPT="Include all segments that contain a cat or a dog; only 1 second of every other animal."
 ```
 
 ## 🚀 Usage

@@ -7,6 +7,7 @@ A Python-based automation tool that downloads videos via `yt-dlp`, analyzes spea
 Ensure you have **Python 3.10+** and **FFmpeg** installed on your Mac. You can install FFmpeg via Homebrew:
 ```bash
 brew install ffmpeg
+```
 
 ## 📦 Installation
 

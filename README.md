@@ -1,13 +1,15 @@
 # video_download_edit
-Video Download & AI Edit
-An automated tool to download videos via yt-dlp, analyze speaker segments using the Gemini 2.0 Flash API, and perform surgical cuts using MoviePy.
 
-🛠 Prerequisites
-Ensure you have Python 3.10+ and FFmpeg installed on your Mac. You can install FFmpeg via Homebrew (which you already have set up for your game dev tools):
+A Python-based automation tool that downloads videos via `yt-dlp`, analyzes speaker segments using the **Gemini 2.0 Flash API**, and performs surgical cuts using **MoviePy**.
 
-Bash
+## 🛠 Prerequisites
+
+Ensure you have **Python 3.10+** and **FFmpeg** installed on your Mac. You can install FFmpeg via Homebrew:
+```bash
 brew install ffmpeg
-📦 Installation
+
+## 📦 Installation
+
 Clone the repository and navigate to the folder.
 
 Install dependencies via pip:

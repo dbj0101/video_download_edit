@@ -18,9 +18,9 @@ Since you are running this on a MacBook Pro, would you like me to add a quick ti
 
 ## 📦 Installation
 
-1. Clone the repository and navigate to the folder.
+1. **Clone the repository** and navigate to the folder.
 
-2. Install dependencies via pip:
+2. **Install dependencies** via pip:
 
 Bash
 pip install moviepy yt-dlp google-generativeai python-dotenv

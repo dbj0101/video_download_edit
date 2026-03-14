@@ -22,27 +22,34 @@ Since you are running this on a MacBook Pro, would you like me to add a quick ti
 
 2. **Install dependencies** via pip:
 
-Bash
+```Bash
 pip install moviepy yt-dlp google-generativeai python-dotenv
-Configure Environment: Create a .env file in the root directory:
+```
+3. **Configure Environment:** Create a .env file in the root directory:
 
-Code snippet
+```Code snippet
 GEMINI_API_KEY=your_api_key_here
 FILE_PREFIX=VF_
 INDEX_WAIT_TIME=60
-🚀 Usage
-The script uses an opt-in architecture. You must explicitly tell it which actions to perform.
+# Optional: Set a custom prompt for the AI analysis
+GEMINI_PROMPT="Include all of Laura speaking; only 1 second of Aaron."
+```
 
-1. Download Only
+## 🚀 Usage
+The script uses an **opt-in** architecture. You must explicitly tell it which actions to perform.
+
+1. **Download Only**
 Downloads the video to the /imported folder using the current date as the filename.
 
-Bash
+```Bash
 python3 import_video.py -u "https://youtube.com/watch?v=example"
-2. Download and Analyze (Gemini API)
-Downloads and generates a keep_segments.json file based on your AI prompt.
+```
+2. **Download and Analyze** (Gemini API)
+Downloads and generates a ```keep_segments.json``` file based on your AI prompt.
 
-Bash
+```Bash
 python3 import_video.py -u "URL" --doAPI
+```
 3. Full Automation (Download, Analyze, and Cut)
 The full "surgical cut" pipeline.
 
